@@ -216,6 +216,7 @@ jobs:
             while ! kubectl get deployment/$deployment_name -n mynamespace
             do
               echo "Waiting for $deployment_name to be created"
+              kubectl get all -n mynamespace
               sleep 5;
             done
             

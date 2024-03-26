@@ -1,4 +1,4 @@
-package org.trusti.operator;
+package org.trusti.operator.controllers;
 
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
@@ -6,28 +6,22 @@ import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.Operator;
 import io.quarkus.test.junit.QuarkusTest;
+import org.awaitility.Awaitility;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.*;
 import org.trusti.operator.cdrs.v2alpha1.DBDeployment;
 import org.trusti.operator.cdrs.v2alpha1.DBService;
 import org.trusti.operator.cdrs.v2alpha1.ApiDeployment;
 import org.trusti.operator.cdrs.v2alpha1.ApiIngress;
 import org.trusti.operator.cdrs.v2alpha1.ApiService;
 import org.trusti.operator.cdrs.v2alpha1.Trusti;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static org.awaitility.Awaitility.await;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 public class TrustiReconcilerTest {
@@ -76,7 +70,7 @@ public class TrustiReconcilerTest {
         client.resource(app).serverSideApply();
 
         // Verify resources
-        await()
+        Awaitility.await()
                 .ignoreException(NullPointerException.class)
                 .atMost(5, TimeUnit.MINUTES)
                 .untilAsserted(() -> {
@@ -92,10 +86,10 @@ public class TrustiReconcilerTest {
                             .getContainers()
                             .stream()
                             .findFirst();
-                    assertThat("DB container not found", dbContainer.isPresent(), is(true));
-                    assertThat("DB container image not valid", dbContainer.get().getImage(), is(dbImage));
+                    MatcherAssert.assertThat("DB container not found", dbContainer.isPresent(), Matchers.is(true));
+                    MatcherAssert.assertThat("DB container image not valid", dbContainer.get().getImage(), Matchers.is(dbImage));
 
-                    assertEquals(1, dbDeployment.getStatus().getReadyReplicas(), "Expected DB deployment number of replicas doesn't match");
+                    Assertions.assertEquals(1, dbDeployment.getStatus().getReadyReplicas(), "Expected DB deployment number of replicas doesn't match");
 
                     // Database service
                     final var dbService = client.services()
@@ -106,7 +100,7 @@ public class TrustiReconcilerTest {
                             .getPorts()
                             .get(0)
                             .getPort();
-                    assertThat("DB service port not valid", dbPort, is(5432));
+                    MatcherAssert.assertThat("DB service port not valid", dbPort, Matchers.is(5432));
 
 
                     // Api Deployment
@@ -121,14 +115,14 @@ public class TrustiReconcilerTest {
                             .getContainers()
                             .stream()
                             .findFirst();
-                    assertThat("Api container not found", webContainer.isPresent(), is(true));
-                    assertThat("Api container image not valid", webContainer.get().getImage(), is(apiImage));
+                    MatcherAssert.assertThat("Api container not found", webContainer.isPresent(), Matchers.is(true));
+                    MatcherAssert.assertThat("Api container image not valid", webContainer.get().getImage(), Matchers.is(apiImage));
                     List<Integer> webContainerPorts = webContainer.get().getPorts().stream()
                             .map(ContainerPort::getContainerPort)
                             .toList();
-                    assertTrue(webContainerPorts.contains(8080), "Api container port 8080 not found");
+                    Assertions.assertTrue(webContainerPorts.contains(8080), "Api container port 8080 not found");
 
-                    assertEquals(1, apiDeployment.getStatus().getReadyReplicas(), "Expected Api deployment number of replicas doesn't match");
+                    Assertions.assertEquals(1, apiDeployment.getStatus().getReadyReplicas(), "Expected Api deployment number of replicas doesn't match");
 
                     // Api service
                     final var apiService = client.services()
@@ -140,7 +134,7 @@ public class TrustiReconcilerTest {
                             .stream()
                             .map(ServicePort::getPort)
                             .toList();
-                    assertTrue(apiServicePorts.contains(8080), "Api service port not valid");
+                    Assertions.assertTrue(apiServicePorts.contains(8080), "Api service port not valid");
 
                     // Ingress
                     final var ingress = client.network().v1().ingresses()
@@ -149,16 +143,16 @@ public class TrustiReconcilerTest {
                             .get();
 
                     final var rules = ingress.getSpec().getRules();
-                    assertThat(rules.size(), is(1));
+                    MatcherAssert.assertThat(rules.size(), Matchers.is(1));
 
                     final var paths = rules.get(0).getHttp().getPaths();
-                    assertThat(paths.size(), is(1));
+                    MatcherAssert.assertThat(paths.size(), Matchers.is(1));
 
                     final var path = paths.get(0);
 
                     final var serviceBackend = path.getBackend().getService();
-                    assertThat(serviceBackend.getName(), is(ApiService.getServiceName(app)));
-                    assertThat(serviceBackend.getPort().getNumber(), is(8080));
+                    MatcherAssert.assertThat(serviceBackend.getName(), Matchers.is(ApiService.getServiceName(app)));
+                    MatcherAssert.assertThat(serviceBackend.getPort().getNumber(), Matchers.is(8080));
                 });
     }
 }
