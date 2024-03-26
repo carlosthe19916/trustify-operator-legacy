@@ -1,4 +1,4 @@
-package org.trusti.operator.controllers;
+package org.trusti.operator;
 
 import io.fabric8.kubernetes.api.model.ContainerPort;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
