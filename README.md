@@ -13,7 +13,7 @@ minikube addons enable ingress
 
 ```shell
 mvn clean package -DskipTests
-kubectl apply -f target/kubernetes/windups.trusti.jboss.org-v1.yml
+kubectl apply -f target/kubernetes/trustis.org.trusti-v1.yml
 ```
 
 ## Start server in dev mode
@@ -22,7 +22,7 @@ kubectl apply -f target/kubernetes/windups.trusti.jboss.org-v1.yml
 mvn compile quarkus:dev
 ```
 
-## Instantiate Windup
+## Instantiate Operator
 
 ```shell
 kubectl apply -f scripts/trusti.yaml
@@ -44,9 +44,8 @@ mvn clean package -DskipTests \
 -Dquarkus.container-image.name=trusti-operator \
 -Dquarkus.operator-sdk.bundle.package-name=trusti-operator \
 -Dquarkus.operator-sdk.bundle.channels=alpha \
--Dquarkus.application.version=test \
--P native
-podman push quay.io/$USER/trusti-operator:test
+-Dquarkus.application.version=0.0.0
+docker push quay.io/$USER/trusti-operator:0.0.0
 ```
 
 Enrich bundle with cluster permissions (util only if generating a catalog for OCP)
@@ -58,20 +57,20 @@ groovy scripts/enrichCSV.groovy target/bundle/trusti-operator/manifests/trusti-o
 Create bundle:
 
 ```shell
-BUNDLE_IMAGE=quay.io/$USER/trusti-operator-bundle:test
-podman build -t $BUNDLE_IMAGE -f target/bundle/trusti-operator/bundle.Dockerfile target/bundle/trusti-operator
-podman push $BUNDLE_IMAGE
+BUNDLE_IMAGE=quay.io/$USER/trusti-operator-bundle:0.0.0
+docker build -t $BUNDLE_IMAGE -f target/bundle/trusti-operator/bundle.Dockerfile target/bundle/trusti-operator
+docker push $BUNDLE_IMAGE
 ```
 
 Create catalog image:
 
 ```shell
-CATALOG_IMAGE=quay.io/$USER/trusti-operator-catalog:test
+CATALOG_IMAGE=quay.io/$USER/trusti-operator-catalog:0.0.0
 opm index add \
   --bundles $BUNDLE_IMAGE \
   --tag $CATALOG_IMAGE \
-  --build-tool podman
-podman push $CATALOG_IMAGE
+  --build-tool docker
+docker push $CATALOG_IMAGE
 ```
 
 Create catalog:
