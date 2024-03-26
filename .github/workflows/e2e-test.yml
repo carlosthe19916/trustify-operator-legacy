@@ -55,7 +55,7 @@ jobs:
       - name: Save container image
         run: docker save -o trusti-operator-container-image.tar localhost:5000/trusti-operator:0.0.0
       - name: Upload container image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: trusti-operator-container-image.tar
@@ -117,7 +117,7 @@ jobs:
           docker save -o trusti-bundle-container-image.tar $BUNDLE_IMAGE
           docker save -o trusti-catalog-container-image.tar $CATALOG_IMAGE
       - name: Upload container image
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts
           path: |
