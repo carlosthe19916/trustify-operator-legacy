@@ -1,0 +1,28 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: trusti-catalog-source
+  namespace: olm
+spec:
+  sourceType: grpc
+  image: localhost:5000/trusti-operator-catalog:0.0.0
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: operatorgroup
+  namespace: mynamespace
+spec:
+  targetNamespaces:
+    - mynamespace
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: trusti-subscription
+  namespace: mynamespace
+spec:
+  channel: alpha
+  name: trusti-operator
+  source: trusti-catalog-source
+  sourceNamespace: olm

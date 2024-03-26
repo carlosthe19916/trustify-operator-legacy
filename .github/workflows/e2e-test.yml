@@ -49,16 +49,16 @@ jobs:
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.registry=localhost:5000 \
           -Dquarkus.container-image.group="" \
-          -Dquarkus.container-image.name=windup-operator \
+          -Dquarkus.container-image.name=trusti-operator \
           -Dquarkus.container-image.tag=0.0.0 \
           -P native
       - name: Save container image
-        run: docker save -o windup-operator-container-image.tar localhost:5000/windup-operator:0.0.0
+        run: docker save -o trusti-operator-container-image.tar localhost:5000/trusti-operator:0.0.0
       - name: Upload container image
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          path: windup-operator-container-image.tar
+          path: trusti-operator-container-image.tar
 
   catalog-container:
     name: Catalog container
@@ -90,14 +90,14 @@ jobs:
           -Dquarkus.container-image.build=false \
           -Dquarkus.container-image.registry=localhost:5000 \
           -Dquarkus.container-image.group="" \
-          -Dquarkus.container-image.name=windup-operator \
-          -Dquarkus.operator-sdk.bundle.package-name=windup-operator \
+          -Dquarkus.container-image.name=trusti-operator \
+          -Dquarkus.operator-sdk.bundle.package-name=trusti-operator \
           -Dquarkus.operator-sdk.bundle.channels=alpha \
           -Dquarkus.application.version=0.0.0 \
           -Dquarkus.kubernetes.image-pull-policy=if-not-present \
           -Dquarkus.kubernetes.env.vars.related-image-pull-policy=IfNotPresent
 
-          groovy scripts/enrichCSV.groovy target/bundle/windup-operator/manifests/windup-operator.clusterserviceversion.yaml
+          groovy scripts/enrichCSV.groovy target/bundle/trusti-operator/manifests/trusti-operator.clusterserviceversion.yaml
       - name: Init local Registry
         run: |
           docker run -d -p 5000:5000 --name registry registry:2
@@ -105,24 +105,24 @@ jobs:
       - name: Create bundle image
         run: |
           # Bundle
-          BUNDLE_IMAGE=localhost:5000/windup-operator-bundle:0.0.0
-          docker build -t $BUNDLE_IMAGE -f target/bundle/windup-operator/bundle.Dockerfile target/bundle/windup-operator
+          BUNDLE_IMAGE=localhost:5000/trusti-operator-bundle:0.0.0
+          docker build -t $BUNDLE_IMAGE -f target/bundle/trusti-operator/bundle.Dockerfile target/bundle/trusti-operator
           docker push $BUNDLE_IMAGE
 
           # Catalog
-          CATALOG_IMAGE=localhost:5000/windup-operator-catalog:0.0.0
+          CATALOG_IMAGE=localhost:5000/trusti-operator-catalog:0.0.0
           opm index add --bundles $BUNDLE_IMAGE --tag $CATALOG_IMAGE --use-http --build-tool docker
 
           # Save container images
-          docker save -o windup-bundle-container-image.tar $BUNDLE_IMAGE
-          docker save -o windup-catalog-container-image.tar $CATALOG_IMAGE
+          docker save -o trusti-bundle-container-image.tar $BUNDLE_IMAGE
+          docker save -o trusti-catalog-container-image.tar $CATALOG_IMAGE
       - name: Upload container image
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: |
-            windup-bundle-container-image.tar
-            windup-catalog-container-image.tar
+            trusti-bundle-container-image.tar
+            trusti-catalog-container-image.tar
 
   e2e-tests:
     needs: [ operator-container, catalog-container ]
@@ -145,9 +145,9 @@ jobs:
           mvn package -DskipTests
       - name: Load and config images
         run: |
-          docker load -i artifacts/windup-operator-container-image.tar
-          docker load -i artifacts/windup-bundle-container-image.tar
-          docker load -i artifacts/windup-catalog-container-image.tar
+          docker load -i artifacts/trusti-operator-container-image.tar
+          docker load -i artifacts/trusti-bundle-container-image.tar
+          docker load -i artifacts/trusti-catalog-container-image.tar
       - name: Setup Minikube
         uses: manusa/actions-setup-minikube@v2.7.2
         with:
@@ -161,44 +161,44 @@ jobs:
           curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.22.0/install.sh | bash -s v0.22.0
 
           # Load images
-          minikube image load localhost:5000/windup-operator:0.0.0
-          minikube image load localhost:5000/windup-operator-bundle:0.0.0
-          minikube image load localhost:5000/windup-operator-catalog:0.0.0
+          minikube image load localhost:5000/trusti-operator:0.0.0
+          minikube image load localhost:5000/trusti-operator-bundle:0.0.0
+          minikube image load localhost:5000/trusti-operator-catalog:0.0.0
 
           # Push images to internal registry
-          docker push localhost:5000/windup-operator:0.0.0
-          docker push localhost:5000/windup-operator-bundle:0.0.0
-          docker push localhost:5000/windup-operator-catalog:0.0.0
+          docker push localhost:5000/trusti-operator:0.0.0
+          docker push localhost:5000/trusti-operator-bundle:0.0.0
+          docker push localhost:5000/trusti-operator-catalog:0.0.0
           
           # Pull images
-          docker pull quay.io/windupeng/windup-web-openshift:latest
-          docker pull quay.io/windupeng/windup-web-openshift-messaging-executor:latest
+          docker pull ghcr.io/carlosthe19916/trusti:latest
           docker pull registry.access.redhat.com/rhscl/postgresql-10-rhel7:1
+          docker pull ghcr.io/carlosthe19916/trusti-importer:latest
       - name: Install operator
         run: |
           kubectl create ns mynamespace
           
           # Create CRD
-          kubectl apply -f target/kubernetes/windups.windup.jboss.org-v1.yml
+          kubectl apply -f target/kubernetes/trustis.org.trusti-v1.yml
           
           # Create custom catalog
-          kubectl create -f scripts/windup-operator.yaml
+          kubectl create -f scripts/trusti-operator.yaml
 
           # Verify
           sleep 10;
-          kubectl get pods -n olm --selector=olm.catalogSource=windup-catalog-source
+          kubectl get pods -n olm --selector=olm.catalogSource=trusti-catalog-source
           kubectl get csv -n olm
           
-          while ! kubectl get deployment/windup-operator -n mynamespace
+          while ! kubectl get deployment/trusti-operator -n mynamespace
           do
             echo "Waiting for operator to be created"
             sleep 5;
           done
 
-          kubectl wait deployment/windup-operator --for condition=available --timeout=-1s -n mynamespace
+          kubectl wait deployment/trusti-operator --for condition=available --timeout=-1s -n mynamespace
       - name: Instantiate operator
         run: |
-          kubectl -n mynamespace apply -f scripts/windup.yaml
+          kubectl -n mynamespace apply -f scripts/trusti.yaml
           
           # Function to verify deployments
           verify_deployment() {
@@ -216,21 +216,18 @@ jobs:
           }
           
           # Verify DB
-          verify_deployment test-app-postgresql-deployment -1s
+          verify_deployment test-app-trusti-db-deployment -1s
           
-          # Verify Web
-          verify_deployment test-app-windup-web-deployment -1s
-          
-          # Verify Executor
-          verify_deployment test-app-windup-executor-deployment 1s
+          # Verify Api
+          verify_deployment test-app-trusti-api-deployment -1s
           
           # Verify Ingress
           external_ip=""
           while [[ -z $external_ip ]]
           do
-            external_ip=$(kubectl get ingress test-app-windup-web-ingress --template="{{range.status.loadBalancer.ingress}}{{.ip}}{{end}}" -n mynamespace);
+            external_ip=$(kubectl get ingress test-app-trusti-api-ingress --template="{{range.status.loadBalancer.ingress}}{{.ip}}{{end}}" -n mynamespace);
             echo "Waiting for end point...current=$external_ip"
             sleep 10;
           done
 
-          echo "Windup ready to be served at: $external_ip"
+          echo "Trusti ready to be served at: $external_ip"
