@@ -168,14 +168,14 @@ jobs:
           curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.27.0/install.sh | bash -s v0.27.0
 
           # Load images
-          minikube image load localhost:5000/trusti-operator:0.0.0
-          minikube image load localhost:5000/trusti-operator-bundle:0.0.0
-          minikube image load localhost:5000/trusti-operator-catalog:0.0.0
+          minikube ssh minikube image load localhost:5000/trusti-operator:0.0.0
+          minikube ssh minikube image load localhost:5000/trusti-operator-bundle:0.0.0
+          minikube ssh minikube image load localhost:5000/trusti-operator-catalog:0.0.0
 
           # Push images to internal registry
-          docker push localhost:5000/trusti-operator:0.0.0
-          docker push localhost:5000/trusti-operator-bundle:0.0.0
-          docker push localhost:5000/trusti-operator-catalog:0.0.0
+          minikube ssh docker push localhost:5000/trusti-operator:0.0.0
+          minikube ssh docker push localhost:5000/trusti-operator-bundle:0.0.0
+          minikube ssh docker push localhost:5000/trusti-operator-catalog:0.0.0
           
           # Pull images
           docker pull ghcr.io/carlosthe19916/trusti:latest
