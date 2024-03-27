@@ -174,15 +174,11 @@ jobs:
 
           # Push images to internal registry
           minikube addons enable registry
-          docker images
-          watch kubectl get pods -n kube-system
-          kubectl get svc -n kube-system
-          minikube addons enable registry-aliases
-          cat /etc/hosts
+          docker run --rm -it --network=host alpine ash -c "apk add socat && socat TCP-LISTEN:5000,reuseaddr,fork TCP:$(minikube ip):5000"
 
-          # docker push localhost:5000/trusti-operator:0.0.0
-          # docker push localhost:5000/trusti-operator-bundle:0.0.0
-          # docker push localhost:5000/trusti-operator-catalog:0.0.0
+          docker push localhost:5000/trusti-operator:0.0.0
+          docker push localhost:5000/trusti-operator-bundle:0.0.0
+          docker push localhost:5000/trusti-operator-catalog:0.0.0
           
           # Pull images
           docker pull ghcr.io/carlosthe19916/trusti:latest
