@@ -5,6 +5,7 @@ import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.Operator;
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.awaitility.Awaitility;
@@ -13,10 +14,12 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.trusti.operator.cdrs.v2alpha1.*;
+import org.trusti.operator.controllers.setup.K3sResource;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@QuarkusTestResource(K3sResource.class)
 @QuarkusTest
 public class TrustiReconcilerTest {
 
@@ -55,13 +58,13 @@ public class TrustiReconcilerTest {
         app.setMetadata(metadata);
 
         // Delete prev instance if exists already
-        if (client.resource(app).get() != null) {
-            client.resource(app).delete();
+        if (client.resource(app).inNamespace(metadata.getNamespace()).get() != null) {
+            client.resource(app).inNamespace(metadata.getNamespace()).delete();
             Thread.sleep(10_000);
         }
 
         // Instantiate Trusti
-        client.resource(app).serverSideApply();
+        client.resource(app).inNamespace(metadata.getNamespace()).serverSideApply();
 
         // Verify resources
         Awaitility.await()
