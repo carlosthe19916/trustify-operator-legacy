@@ -167,6 +167,9 @@ jobs:
           # Install OLM
           curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.27.0/install.sh | bash -s v0.27.0
 
+          curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+          
           # Load images
           minikube ssh minikube image load localhost:5000/trusti-operator:0.0.0
           minikube ssh minikube image load localhost:5000/trusti-operator-bundle:0.0.0
