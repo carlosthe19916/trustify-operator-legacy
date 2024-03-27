@@ -23,12 +23,12 @@ jobs:
           cache: 'maven'
       - name: Setup Minikube-Kubernetes
         # check version in https://github.com/manusa/actions-setup-minikube/releases
-        uses: manusa/actions-setup-minikube@v2.10.0
+        uses: manusa/actions-setup-minikube@v2.9.0
         with:
           # check version in https://github.com/kubernetes/minikube/releases
-          minikube version: 'v1.32.0'
+          minikube version: 'v1.31.2'
           start args: '--addons=ingress'
-          kubernetes version: 'v1.28.3'
+          kubernetes version: 'v1.28.1'
           github token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test
         run: |
@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        kubernetes_version: [ v1.27.11, v1.28.3, v1.29.0 ]
+        kubernetes_version: [ v1.27.5, v1.28.1 ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -152,9 +152,9 @@ jobs:
           docker load -i artifacts/trusti-bundle-container-image.tar
           docker load -i artifacts/trusti-catalog-container-image.tar
       - name: Setup Minikube
-        uses: manusa/actions-setup-minikube@v2.10.0
+        uses: manusa/actions-setup-minikube@v2.9.0
         with:
-          minikube version: v1.32.0
+          minikube version: v1.31.2
           kubernetes version: ${{ matrix.kubernetes_version }}
           start args: --insecure-registry "10.0.0.0/24" --insecure-registry "localhost:5000" --addons=registry,ingress
           github token: ${{ secrets.GITHUB_TOKEN }}
