@@ -161,7 +161,7 @@ jobs:
           kubernetes version: ${{ matrix.kubernetes_version }}
           start args: '--insecure-registry "10.0.0.0/24" --addons=ingress --addons=registry'
           github token: ${{ secrets.GITHUB_TOKEN }}
-          driver: 'docker'
+          driver: 'none'
       - name: Configure Minikube
         run: |
           # Install OLM
@@ -171,14 +171,14 @@ jobs:
           sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
           
           # Load images
-          minikube ssh minikube image load localhost:5000/trusti-operator:0.0.0
-          minikube ssh minikube image load localhost:5000/trusti-operator-bundle:0.0.0
-          minikube ssh minikube image load localhost:5000/trusti-operator-catalog:0.0.0
+          minikube image load localhost:5000/trusti-operator:0.0.0
+          minikube image load localhost:5000/trusti-operator-bundle:0.0.0
+          minikube image load localhost:5000/trusti-operator-catalog:0.0.0
 
           # Push images to internal registry
-          minikube ssh docker push localhost:5000/trusti-operator:0.0.0
-          minikube ssh docker push localhost:5000/trusti-operator-bundle:0.0.0
-          minikube ssh docker push localhost:5000/trusti-operator-catalog:0.0.0
+          docker push localhost:5000/trusti-operator:0.0.0
+          docker push localhost:5000/trusti-operator-bundle:0.0.0
+          docker push localhost:5000/trusti-operator-catalog:0.0.0
           
           # Pull images
           docker pull ghcr.io/carlosthe19916/trusti:latest
