@@ -154,7 +154,7 @@ jobs:
           docker load -i artifacts/trusti-bundle-container-image.tar
           docker load -i artifacts/trusti-catalog-container-image.tar
       - name: Setup Minikube
-        uses: manusa/actions-setup-minikube@v2.9.0
+        uses: manusa/actions-setup-minikube@v2.7.2
         with:
           minikube version: v1.29.0
           kubernetes version: ${{ matrix.kubernetes_version }}
