@@ -6,19 +6,13 @@ import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.Operator;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.awaitility.Awaitility;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
-import org.trusti.operator.cdrs.v2alpha1.DBDeployment;
-import org.trusti.operator.cdrs.v2alpha1.DBService;
-import org.trusti.operator.cdrs.v2alpha1.ApiDeployment;
-import org.trusti.operator.cdrs.v2alpha1.ApiIngress;
-import org.trusti.operator.cdrs.v2alpha1.ApiService;
-import org.trusti.operator.cdrs.v2alpha1.Trusti;
-
-import jakarta.inject.Inject;
+import org.trusti.operator.cdrs.v2alpha1.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
