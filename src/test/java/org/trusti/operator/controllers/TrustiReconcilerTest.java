@@ -1,8 +1,6 @@
 package org.trusti.operator.controllers;
 
-import io.fabric8.kubernetes.api.model.ContainerPort;
-import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
-import io.fabric8.kubernetes.api.model.ServicePort;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.Operator;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -13,6 +11,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
+import org.trusti.operator.Constants;
 import org.trusti.operator.cdrs.v2alpha1.*;
 import org.trusti.operator.controllers.setup.K3sResource;
 
@@ -50,6 +49,25 @@ public class TrustiReconcilerTest {
     @Test
     @Order(1)
     public void reconcileShouldWork() throws InterruptedException {
+        // Requirements
+        client.resource(new NamespaceBuilder()
+                        .withNewMetadata()
+                        .withName(client.getNamespace())
+                        .endMetadata()
+                        .build()
+                )
+                .create();
+
+        client.resource(new ServiceAccountBuilder()
+                        .withNewMetadata()
+                        .withName(Constants.TRUSTI_NAME)
+                        .endMetadata()
+                        .build()
+                )
+                .inNamespace(client.getNamespace())
+                .create();
+
+        //
         final var app = new Trusti();
         final var metadata = new ObjectMetaBuilder()
                 .withName(TEST_APP)
@@ -69,7 +87,7 @@ public class TrustiReconcilerTest {
         // Verify resources
         Awaitility.await()
                 .ignoreException(NullPointerException.class)
-                .atMost(5, TimeUnit.MINUTES)
+                .atMost(2, TimeUnit.MINUTES)
                 .untilAsserted(() -> {
                     // Database
                     final var dbDeployment = client.apps()

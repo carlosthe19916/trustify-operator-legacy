@@ -4,7 +4,6 @@ import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import org.testcontainers.k3s.K3sContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.Collections;
 import java.util.Map;
 
 public class K3sResource implements QuarkusTestResourceLifecycleManager {
@@ -13,7 +12,10 @@ public class K3sResource implements QuarkusTestResourceLifecycleManager {
     @Override
     public Map<String, String> start() {
         k3sContainer.start();
-        return Collections.singletonMap("kubeConfigYaml", k3sContainer.getKubeConfigYaml());
+        return Map.of(
+                "kubeConfigYaml", k3sContainer.getKubeConfigYaml(),
+                "quarkus.kubernetes.namespace", "trusti-operator"
+        );
     }
 
     @Override

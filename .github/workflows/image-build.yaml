@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  image-build:
+  operator-build:
     uses: carlosthe19916/release-tools/.github/workflows/build-push-images.yaml@main
     with:
       registry: "ghcr.io"
@@ -24,3 +24,44 @@ jobs:
     secrets:
       registry_username: ${{ github.actor }}
       registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  bundle-build:
+    uses: carlosthe19916/release-tools/.github/workflows/build-push-images.yaml@main
+    with:
+      registry: "ghcr.io"
+      image_name: "${{ github.repository_owner }}/trusti-operator-bundle"
+      containerfile: "./bundle.Containerfile"
+      architectures: '[ "amd64", "arm64" ]'
+    secrets:
+      registry_username: ${{ github.actor }}
+      registry_password: ${{ secrets.GITHUB_TOKEN }}
+
+  catalog-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup OLM CLIs
+        run: |
+          export ARCH=$(case $(uname -m) in x86_64) echo -n amd64 ;; aarch64) echo -n arm64 ;; *) echo -n $(uname -m) ;; esac)
+          export OS=$(uname | awk '{print tolower($0)}')
+
+          # Opm
+          export OPERATOR_SDK_DL_URL=https://github.com/operator-framework/operator-registry/releases/download/v1.26.5
+          curl -LO ${OPERATOR_SDK_DL_URL}/${OS}-${ARCH}-opm
+          chmod +x ${OS}-${ARCH}-opm && sudo mv ${OS}-${ARCH}-opm /usr/local/bin/opm
+
+      - name: Create catalog
+        run: |
+          opm index add \
+            --bundles ${{ github.repository_owner }}/trusti-operator-bundle:latest \
+            --tag ${{ github.repository_owner }}/trusti-operator-catalog:latest \
+            --build-tool docker
+          docker push $CATALOG_IMAGE
+
+      - name: Push To Registry
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ github.repository_owner }}/trusti-operator-catalog
+          tags: latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: "ghcr.io"

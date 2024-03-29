@@ -1,5 +1,5 @@
-kind: "Trusti"
 apiVersion: "org.trusti/v1"
+kind: "Trusti"
 metadata:
-  name: test-app
+  name: myapp
 spec: { }

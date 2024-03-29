@@ -18,16 +18,19 @@ public class K3sConfigProducer extends KubernetesConfigProducer {
     @ConfigProperty(name = "kubeConfigYaml")
     String kubeConfigYaml;
 
+    @ConfigProperty(name = "quarkus.kubernetes.namespace")
+    String namespace;
+
     //Returns the kubeConfigYaml as the config
     @Singleton
     @Produces
     public Config config(KubernetesClientBuildConfig buildConfig, TlsConfig tlsConfig) {
         String kubeConfigYamlWithDefaultNamespace = kubeConfigYaml.replace("""
-                user: "default"
+                    user: "default"
                 """, """
-                user: "default"
-                    namespace: "default"
-                """);
+                    user: "default"
+                    namespace: "%s"
+                """.formatted(namespace));
         return Config.fromKubeconfig(kubeConfigYamlWithDefaultNamespace);
     }
 }

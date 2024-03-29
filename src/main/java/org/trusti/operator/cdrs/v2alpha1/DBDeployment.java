@@ -152,7 +152,7 @@ public class DBDeployment extends CRUDKubernetesDependentResource<Deployment, Tr
                                                         .withCommand("/bin/sh", "-c", "psql -U $POSTGRESQL_USER -d $POSTGRESQL_DATABASE -c 'SELECT 1'")
                                                         .build()
                                                 )
-                                                .withInitialDelaySeconds(60)
+                                                .withInitialDelaySeconds(10)
                                                 .withTimeoutSeconds(10)
                                                 .withPeriodSeconds(10)
                                                 .withSuccessThreshold(1)
@@ -178,12 +178,12 @@ public class DBDeployment extends CRUDKubernetesDependentResource<Deployment, Tr
                                         )
                                         .withResources(new ResourceRequirementsBuilder()
                                                 .withRequests(Map.of(
-                                                        "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuRequest).orElse("0.5")),
-                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryRequest).orElse("0.5Gi"))
+                                                        "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuRequest).orElse("50m")),
+                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryRequest).orElse("64Mi"))
                                                 ))
                                                 .withLimits(Map.of(
                                                         "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuLimit).orElse("1")),
-                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryLimit).orElse("1Gi"))
+                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryLimit).orElse("0.5Gi"))
                                                 ))
                                                 .build()
                                         )

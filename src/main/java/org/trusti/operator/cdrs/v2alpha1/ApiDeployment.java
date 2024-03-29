@@ -148,6 +148,7 @@ public class ApiDeployment extends CRUDKubernetesDependentResource<Deployment, T
                                 .withRestartPolicy("Always")
                                 .withTerminationGracePeriodSeconds(70L)
                                 .withImagePullSecrets(cr.getSpec().imagePullSecrets())
+                                .withServiceAccountName(Constants.TRUSTI_NAME)
                                 .withContainers(new ContainerBuilder()
                                         .withName(Constants.TRUSTI_API_NAME)
                                         .withImage(image)
@@ -210,12 +211,12 @@ public class ApiDeployment extends CRUDKubernetesDependentResource<Deployment, T
                                         .withVolumeMounts(volumeMounts)
                                         .withResources(new ResourceRequirementsBuilder()
                                                 .withRequests(Map.of(
-                                                        "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuRequest).orElse("0.5")),
-                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryRequest).orElse("0.5Gi"))
+                                                        "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuRequest).orElse("50m")),
+                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryRequest).orElse("64Mi"))
                                                 ))
                                                 .withLimits(Map.of(
-                                                        "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuLimit).orElse("1")),
-                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryLimit).orElse("1Gi"))
+                                                        "cpu", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::cpuLimit).orElse("250m")),
+                                                        "memory", new Quantity(CRDUtils.getValueFromSubSpec(resourcesLimitSpec, TrustiSpec.ResourcesLimitSpec::memoryLimit).orElse("256Mi"))
                                                 ))
                                                 .build()
                                         )

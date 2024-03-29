@@ -5,15 +5,13 @@
 Start minikube
 
 ```shell
-minikube start --cpus=8 --memory=10g
-minikube addons enable ingress
+minikube start --addons=ingress
 ```
 
-## Setup CDRs
+## Setup ServiceAccount
 
 ```shell
-mvn clean package -DskipTests
-kubectl apply -f target/kubernetes/trustis.org.trusti-v1.yml
+kubectl apply -f scripts/kubernetes.yaml
 ```
 
 ## Start server in dev mode
