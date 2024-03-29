@@ -12,5 +12,5 @@ LABEL operators.operatorframework.io.metrics.mediatype.v1=metrics+v1
 LABEL operators.operatorframework.io.metrics.project_layout=quarkus.javaoperatorsdk.io/v1-alpha
 
 # Copy files to locations specified by labels.
-COPY bundle/trusti-operator/manifests /manifests/
-COPY bundle/trusti-operator/metadata /metadata/
+COPY bundle/manifests /manifests/
+COPY bundle/metadata /metadata/
