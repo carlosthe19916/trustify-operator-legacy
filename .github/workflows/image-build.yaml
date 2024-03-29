@@ -27,6 +27,8 @@ jobs:
 
   bundle-build:
     uses: carlosthe19916/release-tools/.github/workflows/build-push-images.yaml@main
+    needs:
+      - operator-build
     with:
       registry: "ghcr.io"
       image_name: "${{ github.repository_owner }}/trusti-operator-bundle"
@@ -38,6 +40,8 @@ jobs:
 
   catalog-build:
     runs-on: ubuntu-latest
+    needs:
+      - bundle-build
     steps:
       - name: Setup OLM CLIs
         run: |
