@@ -63,7 +63,7 @@ jobs:
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ github.repository_owner }}/trusti-operator-catalog
+          image: ghcr.io/${{ github.repository_owner }}/trusti-operator-catalog
           tags: latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
