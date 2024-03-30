@@ -56,10 +56,9 @@ jobs:
       - name: Create catalog
         run: |
           opm index add \
-            --bundles ${{ github.repository_owner }}/trusti-operator-bundle:latest \
-            --tag ${{ github.repository_owner }}/trusti-operator-catalog:latest \
+            --bundles ghcr.io/${{ github.repository_owner }}/trusti-operator-bundle:latest \
+            --tag ghcr.io/${{ github.repository_owner }}/trusti-operator-catalog:latest \
             --build-tool docker
-          docker push $CATALOG_IMAGE
 
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
