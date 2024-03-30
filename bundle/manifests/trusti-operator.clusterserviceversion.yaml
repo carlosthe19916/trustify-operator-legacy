@@ -5,8 +5,7 @@ metadata:
   namespace: trusti
   annotations:
     capabilities: Seamless Upgrades
-    description: >-
-      Trusti is an open-source application platform that helps organizations safely and predictably manage SBOMs and its Vulnerabilities at scale.
+    description: Trusti is an open-source application platform that helps organizations safely and predictably manage SBOMs and its Vulnerabilities at scale.
     categories: 'Application Runtime'
     support: https://github.com/carlosthe19916/trusti-operator/issues
     repository: https://github.com/carlosthe19916/trusti-operator
@@ -166,7 +165,6 @@ spec:
                 - services/finalizers
                 - endpoints
                 - persistentvolumeclaims
-                - events
                 - configmaps
                 - secrets
                 - serviceaccounts
