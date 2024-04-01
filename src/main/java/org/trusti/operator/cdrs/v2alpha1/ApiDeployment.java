@@ -112,13 +112,13 @@ public class ApiDeployment extends CRUDKubernetesDependentResource<Deployment, T
                 .orElse(null);
 
         envVars.add(new EnvVarBuilder()
-                .withName("TRUSTI_IMPORTER_IMAGE")
-                .withValue(importerImage)
+                .withName("QUARKUS_KUBERNETES_CLIENT_NAMESPACE")
+                .withValue(cr.getMetadata().getNamespace())
                 .build()
         );
         envVars.add(new EnvVarBuilder()
-                .withName("TRUSTI_NAMESPACE")
-                .withValue(cr.getMetadata().getNamespace())
+                .withName("TRUSTI_IMPORTER_IMAGE")
+                .withValue(importerImage)
                 .build()
         );
         envVars.add(new EnvVarBuilder()
