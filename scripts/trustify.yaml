@@ -1,0 +1,5 @@
+apiVersion: "org.trustify/v1"
+kind: "Trustify"
+metadata:
+  name: myapp
+spec: { }

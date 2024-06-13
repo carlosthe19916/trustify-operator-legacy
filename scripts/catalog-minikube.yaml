@@ -1,11 +1,11 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
-  name: trusti-catalog-source
+  name: trustify-catalog-source
   namespace: olm
 spec:
   sourceType: grpc
-  image: ghcr.io/carlosthe19916/trusti-operator-bundle:latest
+  image: ghcr.io/carlosthe19916/trustify-operator-bundle:latest
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
@@ -19,10 +19,10 @@ spec:
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
-  name: trusti-subscription
+  name: trustify-subscription
   namespace: mynamespace
 spec:
   channel: alpha
-  name: trusti-operator
-  source: trusti-catalog-source
+  name: trustify-operator
+  source: trustify-catalog-source
   sourceNamespace: olm

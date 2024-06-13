@@ -18,7 +18,7 @@ jobs:
     uses: carlosthe19916/release-tools/.github/workflows/build-push-images.yaml@main
     with:
       registry: "ghcr.io"
-      image_name: "${{ github.repository_owner }}/trusti-operator"
+      image_name: "${{ github.repository_owner }}/trustify-operator"
       containerfile: "./Containerfile"
       architectures: '[ "amd64", "arm64" ]'
     secrets:
@@ -31,7 +31,7 @@ jobs:
       - operator-build
     with:
       registry: "ghcr.io"
-      image_name: "${{ github.repository_owner }}/trusti-operator-bundle"
+      image_name: "${{ github.repository_owner }}/trustify-operator-bundle"
       containerfile: "./bundle.Containerfile"
       architectures: '[ "amd64" ]'
     secrets:
@@ -56,14 +56,14 @@ jobs:
       - name: Create catalog
         run: |
           opm index add \
-            --bundles ghcr.io/${{ github.repository_owner }}/trusti-operator-bundle:latest \
-            --tag ghcr.io/${{ github.repository_owner }}/trusti-operator-catalog:latest \
+            --bundles ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:latest \
+            --tag ghcr.io/${{ github.repository_owner }}/trustify-operator-catalog:latest \
             --build-tool docker
 
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ghcr.io/${{ github.repository_owner }}/trusti-operator-catalog
+          image: ghcr.io/${{ github.repository_owner }}/trustify-operator-catalog
           tags: latest
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}

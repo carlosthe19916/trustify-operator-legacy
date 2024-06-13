@@ -3,19 +3,19 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    app.kubernetes.io/name: trusti
-  name: trusti
+    app.kubernetes.io/name: trustify
+  name: trustify
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
-    app.kubernetes.io/name: trusti
-  name: trusti
+    app.kubernetes.io/name: trustify
+  name: trustify
 rules:
   - apiGroups:
       - ""
-      - "org.trusti"
+      - "org.trustify"
       - "batch"
     resources:
       - '*'
@@ -34,12 +34,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    app.kubernetes.io/name: trusti
-  name: trusti
+    app.kubernetes.io/name: trustify
+  name: trustify
 roleRef:
   kind: Role
   apiGroup: rbac.authorization.k8s.io
-  name: trusti
+  name: trustify
 subjects:
   - kind: ServiceAccount
-    name: trusti
+    name: trustify

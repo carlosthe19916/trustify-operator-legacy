@@ -1,5 +1,0 @@
-apiVersion: "org.trusti/v1"
-kind: "Trusti"
-metadata:
-  name: myapp
-spec: { }
