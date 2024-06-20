@@ -1,4 +1,4 @@
-package org.trustify.operator.cdrs.v2alpha1;
+package org.trustify.operator.cdrs.v2alpha1.api;
 
 import io.fabric8.kubernetes.api.model.GenericKubernetesResource;
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
@@ -12,6 +12,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernete
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition;
 import io.quarkus.logging.Log;
 import org.trustify.operator.Constants;
+import org.trustify.operator.cdrs.v2alpha1.Trustify;
 import org.trustify.operator.utils.CRDUtils;
 
 import jakarta.inject.Inject;

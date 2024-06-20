@@ -13,6 +13,11 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.trustify.operator.Constants;
 import org.trustify.operator.cdrs.v2alpha1.*;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiDeployment;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiIngress;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiService;
+import org.trustify.operator.cdrs.v2alpha1.db.DBDeployment;
+import org.trustify.operator.cdrs.v2alpha1.db.DBService;
 import org.trustify.operator.controllers.setup.K3sResource;
 
 import java.util.List;

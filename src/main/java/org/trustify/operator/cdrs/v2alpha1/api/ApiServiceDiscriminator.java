@@ -1,10 +1,11 @@
-package org.trustify.operator.cdrs.v2alpha1;
+package org.trustify.operator.cdrs.v2alpha1.api;
 
 import io.fabric8.kubernetes.api.model.Service;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.api.reconciler.ResourceDiscriminator;
 import io.javaoperatorsdk.operator.processing.event.ResourceID;
 import io.javaoperatorsdk.operator.processing.event.source.informer.InformerEventSource;
+import org.trustify.operator.cdrs.v2alpha1.Trustify;
 
 import java.util.Optional;
 

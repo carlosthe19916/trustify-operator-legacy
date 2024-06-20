@@ -4,6 +4,9 @@ import io.fabric8.kubernetes.api.model.*;
 import io.quarkus.logging.Log;
 import org.trustify.operator.Constants;
 import org.trustify.operator.cdrs.v2alpha1.*;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiService;
+import org.trustify.operator.cdrs.v2alpha1.db.DBSecret;
+import org.trustify.operator.cdrs.v2alpha1.db.DBService;
 
 import java.util.ArrayList;
 import java.util.Collection;

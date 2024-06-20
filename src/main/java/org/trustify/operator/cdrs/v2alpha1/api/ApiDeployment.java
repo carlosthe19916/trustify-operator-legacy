@@ -1,4 +1,4 @@
-package org.trustify.operator.cdrs.v2alpha1;
+package org.trustify.operator.cdrs.v2alpha1.api;
 
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -14,6 +14,9 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition;
 import org.trustify.operator.Config;
 import org.trustify.operator.Constants;
+import org.trustify.operator.cdrs.v2alpha1.Trustify;
+import org.trustify.operator.cdrs.v2alpha1.TrustifySpec;
+import org.trustify.operator.cdrs.v2alpha1.db.DBDeployment;
 import org.trustify.operator.controllers.TrustifyDistConfigurator;
 import org.trustify.operator.utils.CRDUtils;
 

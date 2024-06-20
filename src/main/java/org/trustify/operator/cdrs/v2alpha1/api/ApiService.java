@@ -1,4 +1,4 @@
-package org.trustify.operator.cdrs.v2alpha1;
+package org.trustify.operator.cdrs.v2alpha1.api;
 
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
@@ -8,29 +8,30 @@ import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 import org.trustify.operator.Constants;
+import org.trustify.operator.cdrs.v2alpha1.Trustify;
+import org.trustify.operator.cdrs.v2alpha1.TrustifySpec;
 import org.trustify.operator.utils.CRDUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
-
 import java.util.Map;
 
-@KubernetesDependent(labelSelector = DBService.LABEL_SELECTOR, resourceDiscriminator = DBServiceDiscriminator.class)
+@KubernetesDependent(labelSelector = ApiService.LABEL_SELECTOR, resourceDiscriminator = ApiServiceDiscriminator.class)
 @ApplicationScoped
-public class DBService extends CRUDKubernetesDependentResource<Service, Trustify> {
+public class ApiService extends CRUDKubernetesDependentResource<Service, Trustify> {
 
-    public static final String LABEL_SELECTOR = "app.kubernetes.io/managed-by=trustify-operator,component=db";
+    public static final String LABEL_SELECTOR = "app.kubernetes.io/managed-by=trustify-operator,component=api";
 
-    public DBService() {
+    public ApiService() {
         super(Service.class);
     }
 
     @Override
-    public Service desired(Trustify cr, Context<Trustify> context) {
+    public Service desired(Trustify cr, Context context) {
         return newService(cr, context);
     }
 
     @SuppressWarnings("unchecked")
-    private Service newService(Trustify cr, Context<Trustify> context) {
+    private Service newService(Trustify cr, Context context) {
         final var labels = (Map<String, String>) context.managedDependentResourceContext()
                 .getMandatory(Constants.CONTEXT_LABELS_KEY, Map.class);
 
@@ -39,7 +40,7 @@ public class DBService extends CRUDKubernetesDependentResource<Service, Trustify
                 .withName(getServiceName(cr))
                 .withNamespace(cr.getMetadata().getNamespace())
                 .withLabels(labels)
-                .addToLabels("component", "db")
+                .addToLabels("component", "api")
                 .withOwnerReferences(CRDUtils.getOwnerReference(cr))
                 .endMetadata()
                 .withSpec(getServiceSpec(cr))
@@ -49,25 +50,24 @@ public class DBService extends CRUDKubernetesDependentResource<Service, Trustify
     private ServiceSpec getServiceSpec(Trustify cr) {
         return new ServiceSpecBuilder()
                 .addNewPort()
-                .withPort(5432)
+                .withPort(getServicePort(cr))
                 .withProtocol(Constants.SERVICE_PROTOCOL)
                 .endPort()
-                .withSelector(Constants.DB_SELECTOR_LABELS)
+                .withSelector(Constants.API_SELECTOR_LABELS)
                 .withType("ClusterIP")
                 .build();
     }
 
+    public static int getServicePort(Trustify cr) {
+        return Constants.HTTP_PORT;
+    }
+
     public static String getServiceName(Trustify cr) {
-        return cr.getMetadata().getName() + Constants.DB_SERVICE_SUFFIX;
+        return cr.getMetadata().getName() + Constants.API_SERVICE_SUFFIX;
     }
 
-    public static String getJdbcUrl(Trustify cr) {
-        return String.format(
-                "jdbc:postgresql://%s:%s/%s",
-                cr.getMetadata().getName() + Constants.DB_SERVICE_SUFFIX,
-                5432,
-                Constants.DB_NAME
-        );
+    public static boolean isTlsConfigured(Trustify cr) {
+        var tlsSecret = CRDUtils.getValueFromSubSpec(cr.getSpec().httpSpec(), TrustifySpec.HttpSpec::tlsSecret);
+        return tlsSecret.isPresent() && !tlsSecret.get().trim().isEmpty();
     }
-
 }
