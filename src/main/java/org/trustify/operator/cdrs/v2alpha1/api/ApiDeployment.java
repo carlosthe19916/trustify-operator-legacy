@@ -133,7 +133,7 @@ public class ApiDeployment extends CRUDKubernetesDependentResource<Deployment, T
                                 .withRestartPolicy("Always")
                                 .withTerminationGracePeriodSeconds(70L)
                                 .withImagePullSecrets(cr.getSpec().imagePullSecrets())
-                                .withServiceAccountName(Constants.TRUSTI_NAME)
+//                                .withServiceAccountName(Constants.TRUSTI_NAME)
                                 .withContainers(new ContainerBuilder()
                                         .withName(Constants.TRUSTI_API_NAME)
                                         .withImage(image)
