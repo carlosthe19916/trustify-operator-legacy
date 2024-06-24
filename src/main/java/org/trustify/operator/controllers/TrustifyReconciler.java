@@ -10,7 +10,15 @@ import io.javaoperatorsdk.operator.api.reconciler.dependent.Dependent;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 import io.javaoperatorsdk.operator.processing.event.source.informer.InformerEventSource;
 import org.jboss.logging.Logger;
-import org.trustify.operator.cdrs.v2alpha1.*;
+import org.trustify.operator.cdrs.v2alpha1.Trustify;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiDeployment;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiIngress;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiIngressSecure;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiService;
+import org.trustify.operator.cdrs.v2alpha1.db.DBDeployment;
+import org.trustify.operator.cdrs.v2alpha1.db.DBPersistentVolumeClaim;
+import org.trustify.operator.cdrs.v2alpha1.db.DBSecret;
+import org.trustify.operator.cdrs.v2alpha1.db.DBService;
 
 import java.time.Duration;
 import java.util.Map;

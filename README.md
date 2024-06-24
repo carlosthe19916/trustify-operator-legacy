@@ -143,12 +143,12 @@ spec:
 EOF
 ```
 
-### Instantiate Trusti
+### Instantiate Trustify
 
 ```shell
 cat <<EOF | kubectl apply -n trustify -f -
 apiVersion: "org.trustify/v1"
-kind: "Trusti"
+kind: "Trustify"
 metadata:
   name: myapp
 spec: { }

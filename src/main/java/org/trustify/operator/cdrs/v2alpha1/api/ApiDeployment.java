@@ -1,24 +1,22 @@
-package org.trustify.operator.cdrs.v2alpha1;
+package org.trustify.operator.cdrs.v2alpha1.api;
 
 import io.fabric8.kubernetes.api.model.*;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
-import io.fabric8.kubernetes.api.model.apps.DeploymentSpec;
-import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
-import io.fabric8.kubernetes.api.model.apps.DeploymentStrategyBuilder;
+import io.fabric8.kubernetes.api.model.apps.*;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
 import io.javaoperatorsdk.operator.api.reconciler.dependent.DependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.Matcher;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUDKubernetesDependentResource;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 import io.javaoperatorsdk.operator.processing.dependent.workflow.Condition;
-import org.trustify.operator.Config;
-import org.trustify.operator.Constants;
-import org.trustify.operator.controllers.TrustifyDistConfigurator;
-import org.trustify.operator.utils.CRDUtils;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.trustify.operator.Config;
+import org.trustify.operator.Constants;
+import org.trustify.operator.cdrs.v2alpha1.Trustify;
+import org.trustify.operator.cdrs.v2alpha1.TrustifySpec;
+import org.trustify.operator.cdrs.v2alpha1.db.DBDeployment;
+import org.trustify.operator.controllers.TrustifyDistConfigurator;
+import org.trustify.operator.utils.CRDUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -130,7 +128,7 @@ public class ApiDeployment extends CRUDKubernetesDependentResource<Deployment, T
                                 .withRestartPolicy("Always")
                                 .withTerminationGracePeriodSeconds(70L)
                                 .withImagePullSecrets(cr.getSpec().imagePullSecrets())
-                                .withServiceAccountName(Constants.TRUSTI_NAME)
+//                                .withServiceAccountName(Constants.TRUSTI_NAME)
                                 .withContainers(new ContainerBuilder()
                                         .withName(Constants.TRUSTI_API_NAME)
                                         .withImage(image)
