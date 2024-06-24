@@ -6,6 +6,7 @@ import org.trustify.operator.Constants;
 import org.trustify.operator.cdrs.v2alpha1.Trustify;
 import org.trustify.operator.cdrs.v2alpha1.TrustifySpec;
 import org.trustify.operator.cdrs.v2alpha1.api.ApiService;
+import org.trustify.operator.cdrs.v2alpha1.api.ApiStoragePersistentVolumeClaim;
 import org.trustify.operator.cdrs.v2alpha1.db.DBSecret;
 import org.trustify.operator.cdrs.v2alpha1.db.DBService;
 
@@ -32,6 +33,7 @@ public class TrustifyDistConfigurator {
 
         configureHttp();
         configureDatabase();
+        configureStorage();
         configureOidc();
     }
 
@@ -104,6 +106,30 @@ public class TrustifyDistConfigurator {
                 .mapOption("DB_PORT", spec -> 5432)
                 .mapOption("DB_NAME", spec -> Constants.DB_NAME)
                 .getEnvVars();
+
+        allEnvVars.addAll(envVars);
+    }
+
+    private void configureStorage() {
+        List<EnvVar> envVars = optionMapper(cr.getSpec())
+                .mapOption("STORAGE_FS_PATH", spec -> "/opt/trustify/storage")
+                .getEnvVars();
+
+        var volume = new VolumeBuilder()
+                .withName("trustify-pvol")
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder()
+                        .withClaimName(ApiStoragePersistentVolumeClaim.getPersistentVolumeClaimName(cr))
+                        .build()
+                )
+                .build();
+
+        var volumeMount = new VolumeMountBuilder()
+                .withName(volume.getName())
+                .withMountPath("/opt/trustify")
+                .build();
+
+        allVolumes.add(volume);
+        allVolumeMounts.add(volumeMount);
 
         allEnvVars.addAll(envVars);
     }
