@@ -57,8 +57,7 @@ jobs:
       - name: Extract tag
         id: extract_tag
         run: |
-          is_tag=${{ startsWith(github.ref_name, 'v') }};
-          tag=$(if [ $export = true ];then echo "${{github.ref_name}}"; else echo "latest"; fi)
+          tag=$(if [[ ${{github.ref_name}} == v* ]];then echo "${{github.ref_name}}"; else echo "latest"; fi)
           echo "TAG=$tag" >> $GITHUB_ENV
 
       - name: Create catalog
