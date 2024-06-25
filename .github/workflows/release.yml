@@ -113,8 +113,8 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           path: ./community-operators
           commit-message: "trustify-operator-${{ github.event.inputs.version }}"
-          committer: "${{ secrets.GH_USER }} <noreply@github.com>"
-          author: "${{ secrets.GH_USER }} <${{ secrets.GH_USER }}@users.noreply.github.com>"
+          committer: "trust.bot <noreply@github.com>"
+          author: "trust.bot <trust.bot@users.noreply.github.com>"
           signoff: true
           branch: ${{ github.event.inputs.version }}
           push-to-fork: carlosthe19916/community-operators
