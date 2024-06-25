@@ -80,19 +80,14 @@ jobs:
       - name: wait for image
         run: |
           #!/bin/bash
-          for image in 'trustify-operator' 'trustify-operator-bundle';
-          do
-          
-          while ! docker pull ghcr.io/${{ github.repository_owner }}/$image:${{ github.event.inputs.version }} &> /dev/null; do
+          while ! docker pull ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:v${{ github.event.inputs.version }} &> /dev/null; do
             sleep 3m
           done
-          docker image inspect ghcr.io/${{ github.repository_owner }}/$image:${{ github.event.inputs.version }}
-          
-          done
+          docker image inspect ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:v${{ github.event.inputs.version }}
 
       - name: Create scratch bundle image
         run: |
-          docker create --name extract "ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:${{ github.event.inputs.version }}" foo
+          docker create --name extract "ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:v${{ github.event.inputs.version }}" foo
       - name: Checkout community operators
         uses: actions/checkout@v4
         with:
