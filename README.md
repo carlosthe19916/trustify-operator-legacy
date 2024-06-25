@@ -47,7 +47,7 @@ mvn clean package -DskipTests \
 docker push quay.io/$USER/trustify-operator:0.0.0
 ```
 
-Enrich bundle with cluster permissions (util only if generating a catalog for OCP)
+Enrich bundle with cluster permissions (only if generating a catalog for OCP)
 
 ```shell
 groovy scripts/enrichCSV.groovy target/bundle/trustify-operator/manifests/trustify-operator.clusterserviceversion.yaml
