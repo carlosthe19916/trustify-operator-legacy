@@ -1,0 +1,55 @@
+project:
+  name: trustify-operator
+  description: Trustify Operator
+  longDescription: Trustify Operator
+  authors:
+    - Carlos E. Feria Vila
+  license: Apache-2
+  java:
+    groupId: org.trustify.operator
+    version: 17
+  inceptionYear: 2024
+  links:
+    homepage: https://trustification.io/
+
+release:
+  github:
+    owner: carlosthe19916
+    name: trustify-operator
+    branch: main
+    overwrite: true
+    discussionCategoryName: Announcements
+    issues:
+      enabled: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+      labelers:
+        - label: 'feat'
+          title: 'regex:^(?:\(feat\)(?:\(.*\))?!?):\s.*'
+        - label: 'fix'
+          title: 'regex:^(?:\(fix\)(?:\(.*\))?!?):\s.*'
+        - label: 'chore'
+          title: '(chore)'
+
+        - label: 'dependencies'
+          title: '(deps)'
+        - label: 'dependencies'
+          title: 'regex:(?:\(deps\)(?:\(.*\))?!?):\s.*'
+        - label: 'dependencies'
+          title: 'regex:(?:\(deps-dev\)(?:\(.*\))?!?):\s.*'
+        - label: 'dependencies'
+          title: 'regex:^Bump\s'
+      categories:
+        - title: '⚙️  Dependencies'
+          key: 'dependencies'
+          labels:
+            - 'dependencies'
+      hide:
+        categories:
+          - 'merge'
+          - 'build'
+          - 'dependencies'
+        contributors:
+          - 'GitHub'
+          - 'dependabot'
