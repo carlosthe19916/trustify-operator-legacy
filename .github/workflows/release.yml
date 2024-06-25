@@ -99,7 +99,7 @@ jobs:
         working-directory: ./community-operators
         run: |
           version="${{ github.event.inputs.version }}"
-          co_version="${version:1}"
+          co_version="${version:0}"
           operator_path="./operators/trustify-operator/${co_version}"
           mkdir -p "${operator_path}"
           docker cp extract:/metadata "${operator_path}"
