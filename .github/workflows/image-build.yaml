@@ -54,18 +54,25 @@ jobs:
           curl -LO ${OPERATOR_SDK_DL_URL}/${OS}-${ARCH}-opm
           chmod +x ${OS}-${ARCH}-opm && sudo mv ${OS}-${ARCH}-opm /usr/local/bin/opm
 
+      - name: Extract tag
+        id: extract_tag
+        run: |
+          is_tag=${{ startsWith(github.ref_name, 'v') }};
+          tag=$(if [ $export = true ];then echo "${{github.ref_name}}"; else echo "latest"; fi)
+          echo "TAG=$tag" >> $GITHUB_ENV
+
       - name: Create catalog
         run: |
           opm index add \
-            --bundles ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:${{ github.ref_name || 'latest'}} \
-            --tag ${{ github.repository_owner }}/trustify-operator-catalog:${{ github.ref_name || 'latest'}} \
+            --bundles ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:${{ env.TAG }} \
+            --tag ${{ github.repository_owner }}/trustify-operator-catalog:${{ env.TAG }} \
             --build-tool podman
 
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ github.repository_owner }}/trustify-operator-catalog
-          tags: ${{ github.ref_name || 'latest'}}
+          tags: ${{ env.TAG }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: "ghcr.io"
