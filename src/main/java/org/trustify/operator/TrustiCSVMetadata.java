@@ -25,6 +25,11 @@ import io.quarkiverse.operatorsdk.annotations.SharedCSVMetadata;
                         apiGroups = {"apps", "extensions"},
                         resources = {"deployments"},
                         verbs = {"*"}
+                ),
+                @CSVMetadata.PermissionRule(
+                        apiGroups = {"config.openshift.io"},
+                        resources = {"ingresses"},
+                        verbs = {"get", "list"}
                 )
         },
         installModes = {
@@ -33,7 +38,43 @@ import io.quarkiverse.operatorsdk.annotations.SharedCSVMetadata;
                 @CSVMetadata.InstallMode(type = "MultiNamespace", supported = false),
                 @CSVMetadata.InstallMode(type = "AllNamespaces", supported = false)
         },
-        icon = @CSVMetadata.Icon(fileName = "icon.png", mediatype = "image/png")
+        icon = @CSVMetadata.Icon(fileName = "icon.png", mediatype = "image/png"),
+        description = """
+                Trustify is vendor-neutral, thought-leadering, mostly informational collection of resources devoted to making Software Supply Chains easier to create, manage, consume and ultimately... to trust!
+                
+                
+                Trustify is a project within the [Trustification community](https://trustification.io/).
+                
+                
+                ### Install
+                Once you have successfully installed the Operator, proceed to deploy components by creating the required CR.
+                
+                By default, the Operator installs the following components on a target cluster:
+                
+                * Server
+                * UI
+                
+                ### Documentation
+                Documentation can be found on our [website](https://trustification.io/).
+                
+                ### Getting help
+                If you encounter any issues while using Trustify, you can create an issue on our [Github repo](https://github.com/trustification/trustify/issues), for bugs, enhancements or other requests.
+                
+                ### Contributing
+                You can contribute by:
+                
+                * Raising any issues you find
+                * Fixing issues by opening [Pull Requests](https://github.com/trustification/trustify/pulls)
+                
+                """,
+        keywords = {"trust"},
+        maturity = "alpha",
+        provider = @CSVMetadata.Provider(name = "Trustification"),
+        links = {
+                @CSVMetadata.Link(name = "Website", url = "https://trustification.io/"),
+                @CSVMetadata.Link(name = "Github", url = "https://github.com/trustification/trustify")
+        },
+        maintainers = {@CSVMetadata.Maintainer(name = "Trustification")}
 )
 public class TrustiCSVMetadata implements SharedCSVMetadata {
 }

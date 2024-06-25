@@ -34,6 +34,7 @@ jobs:
       image_name: "${{ github.repository_owner }}/trustify-operator-bundle"
       containerfile: "./bundle.Containerfile"
       architectures: '[ "amd64" ]'
+      extra-args: "--build-arg ${{ github.repository_owner }}"
     secrets:
       registry_username: ${{ github.actor }}
       registry_password: ${{ secrets.GITHUB_TOKEN }}
@@ -56,15 +57,15 @@ jobs:
       - name: Create catalog
         run: |
           opm index add \
-            --bundles ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:latest \
-            --tag ${{ github.repository_owner }}/trustify-operator-catalog:latest \
+            --bundles ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:${{ github.ref_name || 'latest'}} \
+            --tag ${{ github.repository_owner }}/trustify-operator-catalog:${{ github.ref_name || 'latest'}} \
             --build-tool podman
 
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ github.repository_owner }}/trustify-operator-catalog
-          tags: latest
+          tags: ${{ github.ref_name || 'latest'}}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: "ghcr.io"
