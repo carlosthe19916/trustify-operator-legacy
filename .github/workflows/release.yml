@@ -72,3 +72,56 @@ jobs:
         with:
           commit_message: "⬆️ Next version ${{ github.event.inputs.next }}"
           branch: main
+
+  publish-bundle:
+    needs: [ release ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: wait for image
+        run: |
+          #!/bin/bash
+          for image in 'trustify-operator' 'trustify-operator-bundle';
+          do
+          
+          while ! docker pull ghcr.io/${{ github.repository_owner }}/$image:${{ github.event.inputs.version }} &> /dev/null; do
+            sleep 3m
+          done
+          docker image inspect ghcr.io/${{ github.repository_owner }}/$image:${{ github.event.inputs.version }}
+          
+          done
+
+      - name: Create scratch bundle image
+        run: |
+          docker create --name extract "ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:${{ github.event.inputs.version }}" foo
+      - name: Checkout community operators
+        uses: actions/checkout@v4
+        with:
+          repository: k8s-operatorhub/community-operators
+          path: community-operators
+          ref: main
+          fetch-depth: 0
+      - name: Update community operators
+        working-directory: ./community-operators
+        run: |
+          version="${{ github.event.inputs.version }}"
+          co_version="${version:1}"
+          operator_path="./operators/trustify-operator/${co_version}"
+          mkdir -p "${operator_path}"
+          docker cp extract:/metadata "${operator_path}"
+          docker cp extract:/manifests "${operator_path}"
+          git diff
+
+      - name: Create Pull Request - Community Operators
+        uses: peter-evans/create-pull-request@v5
+        id: co-cpr
+        with:
+          token: ${{ secrets.GH_PAT }}
+          path: ./community-operators
+          commit-message: "trustify-operator-${{ github.event.inputs.version }}"
+          committer: "${{ secrets.GH_USER }} <noreply@github.com>"
+          author: "${{ secrets.GH_USER }} <${{ secrets.GH_USER }}@users.noreply.github.com>"
+          signoff: true
+          branch: ${{ github.event.inputs.version }}
+          push-to-fork: carlosthe19916/community-operators
+          title: "trustify-operator-${{ github.event.inputs.version }}"
+#          body-path: ./changelog.md
