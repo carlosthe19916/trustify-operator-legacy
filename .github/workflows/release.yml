@@ -31,6 +31,7 @@ jobs:
         uses: carlosthe19916/release-tools/.github/actions/commit@main
         with:
           commit_message: "🏁 Releasing version ${{ github.event.inputs.version }}"
+          branch: main
 
   release:
     needs: [ prepare ]
@@ -38,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: master
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-java@v3
         with:
@@ -70,3 +71,4 @@ jobs:
         uses: carlosthe19916/release-tools/.github/actions/commit@main
         with:
           commit_message: "⬆️ Next version ${{ github.event.inputs.next }}"
+          branch: main
