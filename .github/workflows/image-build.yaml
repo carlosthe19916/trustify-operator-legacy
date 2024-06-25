@@ -59,6 +59,7 @@ jobs:
             --bundles ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:latest \
             --tag ghcr.io/${{ github.repository_owner }}/trustify-operator-catalog:latest \
             --build-tool docker
+          docker images
 
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2
