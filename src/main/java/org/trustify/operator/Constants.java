@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class Constants {
     public static final String CRDS_GROUP = "org.trustify";
-    public static final String CRDS_VERSION = "v1";
+    public static final String CRDS_VERSION = "v1alpha1";
 
     public static final String CONTEXT_LABELS_KEY = "labels";
 

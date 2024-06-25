@@ -8,6 +8,8 @@ def file = new File(this.args[0])
 def fileReader = new FileReader(file)
 def yaml = new Yaml().load(fileReader)
 
+yaml.metadata.annotations.description = "Trustify is devoted to making Software Supply Chains easier"
+
 // Adding cluster permissions to be able to fetch host domain
 yaml.spec.install.spec.clusterPermissions.rules[0][1] = [:]
 yaml.spec.install.spec.clusterPermissions.rules[0][1].apiGroups = ['config.openshift.io']

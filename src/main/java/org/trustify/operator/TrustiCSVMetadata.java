@@ -74,7 +74,23 @@ import io.quarkiverse.operatorsdk.annotations.SharedCSVMetadata;
                 @CSVMetadata.Link(name = "Website", url = "https://trustification.io/"),
                 @CSVMetadata.Link(name = "Github", url = "https://github.com/trustification/trustify")
         },
-        maintainers = {@CSVMetadata.Maintainer(name = "Trustification")}
+        maintainers = {@CSVMetadata.Maintainer(name = "Trustification", email = "trustification@googlegroups.com")},
+        annotations = @CSVMetadata.Annotations(
+                repository = "https://github.com/trustification/trustify-operator",
+                categories = "Application Runtime",
+                capabilities = "Basic Install",
+                almExamples = """                                      
+                [{
+                  "apiVersion": "org.trustify/v1alpha1",
+                  "kind": "Trustify",
+                  "metadata": {
+                    "name": "myapp"
+                  },
+                  "spec": { }
+                }]
+                """
+        ),
+        minKubeVersion = "1.16.0"
 )
 public class TrustiCSVMetadata implements SharedCSVMetadata {
 }

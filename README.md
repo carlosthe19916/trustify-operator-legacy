@@ -147,7 +147,7 @@ EOF
 
 ```shell
 cat <<EOF | kubectl apply -n trustify -f -
-apiVersion: "org.trustify/v1"
+apiVersion: "org.trustify/v1alpha1"
 kind: "Trustify"
 metadata:
   name: myapp
