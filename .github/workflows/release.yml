@@ -88,6 +88,7 @@ jobs:
       - name: Create scratch bundle image
         run: |
           docker create --name extract "ghcr.io/${{ github.repository_owner }}/trustify-operator-bundle:v${{ github.event.inputs.version }}" foo
+
       - name: Checkout community operators
         uses: actions/checkout@v4
         with:
@@ -101,6 +102,24 @@ jobs:
           version="${{ github.event.inputs.version }}"
           co_version="${version:0}"
           operator_path="./operators/trustify-operator/${co_version}"
+          mkdir -p "${operator_path}"
+          docker cp extract:/metadata "${operator_path}"
+          docker cp extract:/manifests "${operator_path}"
+          git diff
+
+      - name: Checkout redhat community operators
+        uses: actions/checkout@v4
+        with:
+          repository: redhat-openshift-ecosystem/community-operators-prod
+          path: redhat-community-operators
+          ref: main
+          fetch-depth: 0
+      - name: Update redhat community operators
+        working-directory: ./redhat-community-operators
+        run: |
+          version="${{ inputs.version }}"
+          co_version="${version:0}"
+          operator_path="./operators/konveyor-operator/${co_version}"
           mkdir -p "${operator_path}"
           docker cp extract:/metadata "${operator_path}"
           docker cp extract:/manifests "${operator_path}"
@@ -120,3 +139,23 @@ jobs:
           push-to-fork: carlosthe19916/community-operators
           title: "trustify-operator-${{ github.event.inputs.version }}"
 #          body-path: ./changelog.md
+
+      - name: Create Pull Request - Red Hat Community Operators
+        uses: peter-evans/create-pull-request@v5
+        id: rhco-cpr
+        with:
+          token: ${{ secrets.GH_PAT }}
+          path: ./redhat-community-operators
+          commit-message: "trustify-operator-${{ github.event.inputs.version }}"
+          committer: "trust.bot <noreply@github.com>"
+          author: "trust.bot <trust.bot@users.noreply.github.com>"
+          signoff: true
+          branch: ${{ github.event.inputs.version }}
+          push-to-fork: konveyor-release-bot/community-operators-prod
+          title: "trustify-operator-${{ github.event.inputs.version }}"
+#          body-path: ./changelog.md
+
+      - name: PR Notifications
+        run: |
+          echo "::notice:: Community Operators Pull Request URL - ${{ steps.co-cpr.outputs.pull-request-url }}"
+          echo "::notice:: Red Hat Community Operators Pull Request URL - ${{ steps.rhco-cpr.outputs.pull-request-url }}"
