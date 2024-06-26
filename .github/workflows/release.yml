@@ -151,7 +151,7 @@ jobs:
           author: "trust.bot <trust.bot@users.noreply.github.com>"
           signoff: true
           branch: ${{ github.event.inputs.version }}
-          push-to-fork: konveyor-release-bot/community-operators-prod
+          push-to-fork: carlosthe19916/community-operators-prod
           title: "trustify-operator-${{ github.event.inputs.version }}"
 #          body-path: ./changelog.md
 
