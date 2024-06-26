@@ -76,6 +76,7 @@ import io.quarkiverse.operatorsdk.annotations.SharedCSVMetadata;
         },
         maintainers = {@CSVMetadata.Maintainer(name = "Trustification", email = "trustification@googlegroups.com")},
         annotations = @CSVMetadata.Annotations(
+                containerImage = "ghcr.io/carlosthe19916/trustify-operator",
                 repository = "https://github.com/trustification/trustify-operator",
                 categories = "Application Runtime",
                 capabilities = "Basic Install",
