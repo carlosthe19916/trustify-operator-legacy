@@ -34,7 +34,7 @@ jobs:
       image_name: "${{ github.repository_owner }}/trustify-operator-bundle"
       containerfile: "./bundle.Containerfile"
       architectures: '[ "amd64" ]'
-      extra-args: "--build-arg ${{ github.repository_owner }}"
+      extra-args: "--build-arg IMAGE_GROUP=${{ github.repository_owner }}"
     secrets:
       registry_username: ${{ github.actor }}
       registry_password: ${{ secrets.GITHUB_TOKEN }}
